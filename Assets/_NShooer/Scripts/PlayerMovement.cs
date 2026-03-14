@@ -10,6 +10,7 @@ namespace NShooter
 		[SerializeField] private Rigidbody _rb;
         [SerializeField] private float _speed = 6f;
         [SerializeField] private float _rotateSpeed = 10f;
+        [SerializeField] private Animator _animator;
 
         Camera camera;
         private void Start()
@@ -24,6 +25,12 @@ namespace NShooter
             // Move accord to camera
             Vector3 direction = GetMoveDirection();
             transform.Translate(direction * Time.deltaTime * _speed);
+
+            // Set Animator attribute
+            _animator.SetFloat("Horizontal", direction.x);
+            _animator.SetFloat("Vertical", direction.z);
+            // print(direction.magnitude);
+            _animator.SetFloat("Speed", direction.magnitude);
 
             // Get Raycast Position On Plane
             Vector3 raycastPosition = GetRaycastPosition();
