@@ -218,9 +218,10 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _weaponVisuals: {fileID: 771713669796290865}
   _fireRate: 0.1
   _maxAmmo: 30
-  _reloadSpeed: 2
+  _reloadDuration: 2
   _maxDistance: 100
   _muzzlePoint: {fileID: 5804387995846285004}
   _hitLayerMask:

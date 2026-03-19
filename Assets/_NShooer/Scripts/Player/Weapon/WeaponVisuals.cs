@@ -33,12 +33,21 @@ namespace NShooter
 			}
         }
 
-		// 服务器 → 所有客户端：播放子弹
-		[ClientRpc]
+        public void PlayLocalBullet(BulletData bullet)
+        {
+            if (!isLocalPlayer) return; // 只给自己看
+            SpawnBulletEffect(bullet);
+            StartCoroutine(SpawnFireFlash());
+        }
+
+        // 服务器 → 所有客户端：播放子弹
+        [ClientRpc]
 		private void RpcSpawnBullet(BulletData bullet)
 		{
-			// 每个客户端本地创建子弹特效
-			SpawnBulletEffect(bullet);
+            if (isLocalPlayer) return;
+
+            // 每个客户端本地创建子弹特效
+            SpawnBulletEffect(bullet);
 			// 创建枪口火花特效
 			StartCoroutine(SpawnFireFlash());
 		}

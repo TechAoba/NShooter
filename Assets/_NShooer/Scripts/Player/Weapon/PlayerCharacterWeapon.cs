@@ -8,7 +8,9 @@ namespace NShooter
 {
 	public class PlayerCharacterWeapon : NetworkBehaviour
 	{
-		[Header("Fire Config")]
+		public WeaponVisuals _weaponVisuals;
+
+        [Header("Fire Config")]
 		[SerializeField] private float _fireRate = 0.1f;		// 射速
 		[SerializeField] private int _maxAmmo = 30;				// 弹夹容量
 		public float _reloadDuration = 2f;							// 换弹速度
@@ -44,9 +46,9 @@ namespace NShooter
 			if (!isLocalPlayer) return;
 			if (Input.GetMouseButton(0) && CanShotLocally())
 			{
-				// 鼠标左键 射击（向服务器发送射击命令）
-				CmdShooting();
-				_lastShotTimeLocal = Time.time; // 更新本地时间
+                PredictedFire(); // 本地立即播放
+				CmdShooting();	 // 鼠标左键 射击（向服务器发送射击命令）
+                _lastShotTimeLocal = Time.time; // 更新本地时间
 			}
 			if (Input.GetKeyDown(KeyCode.R))
 			{
@@ -80,27 +82,9 @@ namespace NShooter
 			_lastShotTime = Time.time;
 			--_currentAmmoAmount;
 
-			// 服务器执行射线检测
-			Vector3 origin = _muzzlePoint.position;
-			Vector3 direction = _muzzlePoint.forward.normalized;
-			float actualDistance = _maxDistance;
+			BulletData bullet = calcBulletRayCast();
 
-			// 若命中物体
-			if (Physics.Raycast(_muzzlePoint.position, _muzzlePoint.forward, 
-				out RaycastHit hitInfo, _maxDistance, _hitLayerMask))
-			{
-				actualDistance = hitInfo.distance;
-				print($"hit: {hitInfo.collider.name}");
-			}
-
-			// 构造子弹数据
-			BulletData bullet = new BulletData
-			{
-				origin = origin,
-				direction = direction,
-				distance = actualDistance,
-			};
-			onBulletFired?.Invoke(bullet);
+            onBulletFired?.Invoke(bullet);
 
 			// 弹夹弹药打空，执行换弹
 			if (_currentAmmoAmount <= 0)
@@ -109,7 +93,43 @@ namespace NShooter
 			}
 		}
 
-		[Server]
+        [ClientCallback]
+        private void PredictedFire()
+        {
+            if (!isLocalPlayer || _muzzlePoint == null) return;
+
+            var bullet = calcBulletRayCast();
+
+            // 直接告诉 WeaponVisuals 播放（绕过网络）
+            _weaponVisuals?.PlayLocalBullet(bullet); // 你需要加这个方法
+        }
+
+        private BulletData calcBulletRayCast()
+		{
+            // 服务器执行射线检测
+            Vector3 origin = _muzzlePoint.position;
+            Vector3 direction = _muzzlePoint.forward.normalized;
+            float actualDistance = _maxDistance;
+
+            // 若命中物体
+            if (Physics.Raycast(origin, direction,
+                out RaycastHit hit, _maxDistance, _hitLayerMask))
+            {
+                actualDistance = hit.distance;
+                print($"hit: {hit.collider.name}");
+            }
+
+            // 构造子弹数据
+            BulletData bullet = new BulletData
+            {
+                origin = origin,
+                direction = direction,
+                distance = actualDistance,
+            };
+			return bullet;
+        }
+
+        [Server]
 		private void ServerStartReload()
 		{
 			_isReloading = true;
