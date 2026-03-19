@@ -17,8 +17,15 @@ namespace NShooter
 		[Header("Server Data")]
 		[SerializeField] private float _lastShotTime;	// 上次射击时间（服务器维护）
 
+		[Header("Fire Data")]
 		[SerializeField] private VFXBulletVisual _bulletPrefab;
+		[SerializeField] private GameObject _vfxMuzzleFlash;
+		[SerializeField] private float _muzzleFlashDuration = 0.05f;
 
+        private void Start()
+        {
+            _vfxMuzzleFlash.SetActive(false);
+        }
 
         private void FixedUpdate()
         {
@@ -75,6 +82,8 @@ namespace NShooter
 		{
 			// 每个客户端本地创建子弹特效
 			SpawnBulletEffect(bullet);
+			// 创建枪口火花特效
+			StartCoroutine(SpawnFireFlash());
 		}
 
 		[Client]
@@ -85,6 +94,14 @@ namespace NShooter
 			Quaternion rotation = Quaternion.LookRotation(bulletData.direction, Vector3.up);
 			VFXBulletVisual bulletVisual = Instantiate(_bulletPrefab, startPoint, rotation);
 			bulletVisual.FlyTo(bulletData.direction * bulletData.distance);
+		}
+
+		[Client]
+		IEnumerator SpawnFireFlash()
+		{
+			_vfxMuzzleFlash.SetActive(true);
+			yield return new WaitForSeconds(_muzzleFlashDuration);
+			_vfxMuzzleFlash.SetActive(false);
 		}
     }
 }
