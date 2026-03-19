@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f17a2656c7d4495f86afa6511d29f85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _vfxBulletImpactPrefab: {fileID: 5913756854487577977, guid: 7922b2629a9b242728793b36be9e052d, type: 3}
   _moveSpeed: 50
 --- !u!1 &5807957976938791823
 GameObject:

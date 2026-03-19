@@ -17,7 +17,7 @@ namespace NShooter
 		[Header("Server Data")]
 		[SerializeField] private float _lastShotTime;	// 上次射击时间（服务器维护）
 
-		[SerializeField] private BulletVisual _bulletPrefab;
+		[SerializeField] private VFXBulletVisual _bulletPrefab;
 
 
         private void FixedUpdate()
@@ -83,10 +83,8 @@ namespace NShooter
 			Vector3 startPoint = bulletData.origin;
 
 			Quaternion rotation = Quaternion.LookRotation(bulletData.direction, Vector3.up);
-			BulletVisual bulletVisual = Instantiate(_bulletPrefab, startPoint, rotation);
-			float flyTime = bulletVisual.FlyTo(bulletData.direction * bulletData.distance);
-
-			Destroy(bulletVisual.gameObject, flyTime);
+			VFXBulletVisual bulletVisual = Instantiate(_bulletPrefab, startPoint, rotation);
+			bulletVisual.FlyTo(bulletData.direction * bulletData.distance);
 		}
     }
 }

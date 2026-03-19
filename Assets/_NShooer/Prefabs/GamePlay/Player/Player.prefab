@@ -222,7 +222,7 @@ MonoBehaviour:
   _maxDistance: 100
   _hitLayerMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 192
   _lastShotTime: 0
   _bulletPrefab: {fileID: 462249062437318774, guid: 78f438655c7b644c392b775f9c4be938, type: 3}
 --- !u!1 &3309028738408494951

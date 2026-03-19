@@ -6,15 +6,15 @@ using UnityEngine;
 
 namespace NShooter 
 {
-	public class BulletVisual : MonoBehaviour
+	public class VFXBulletVisual : MonoBehaviour
 	{
+		[SerializeField] private GameObject _vfxBulletImpactPrefab;
 		[SerializeField] float _moveSpeed = 50f;
 
-		public float FlyTo(Vector3 offset)
+		public void FlyTo(Vector3 offset)
 		{
 			float duration = offset.magnitude / _moveSpeed;
 			StartCoroutine(MoveRoutine(offset, duration));
-			return duration;
 		}
 
 		IEnumerator MoveRoutine(Vector3 offset, float duration)
@@ -29,6 +29,15 @@ namespace NShooter
 				yield return null;
 			}
 			transform.position = end;
+			DestroyThis();
+		}
+
+		private void DestroyThis()
+		{
+			// 碰撞粒子特效
+			Instantiate(_vfxBulletImpactPrefab, transform.position, Quaternion.identity);
+			
+			Destroy(gameObject);
 		}
 	}
 }
