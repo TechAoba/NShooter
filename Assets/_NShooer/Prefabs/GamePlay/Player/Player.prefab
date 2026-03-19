@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: -4610906088848158563}
   - component: {fileID: 4077696295603531677}
   - component: {fileID: 8868974464789103373}
+  - component: {fileID: 771713669796290865}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -218,17 +219,35 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _fireRate: 0.1
-  _muzzlePoint: {fileID: 5804387995846285004}
+  _maxAmmo: 30
+  _reloadSpeed: 2
   _maxDistance: 100
+  _muzzlePoint: {fileID: 5804387995846285004}
   _hitLayerMask:
     serializedVersion: 2
     m_Bits: 192
-  _maxAmmo: 30
-  _reloadSpeed: 2
   _lastShotTime: 0
+--- !u!114 &771713669796290865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1358876274445948432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94ac5d97ae04e49e08b8d2636df2a39f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMethod: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _weapon: {fileID: 8868974464789103373}
+  _anim: {fileID: 6935892823168505161}
   _bulletPrefab: {fileID: 462249062437318774, guid: 78f438655c7b644c392b775f9c4be938, type: 3}
   _vfxMuzzleFlash: {fileID: 5140498366806456158}
-  _muzzleFlashDuration: 0.1
+  _muzzleFlashDuration: 0.05
 --- !u!1 &3309028738408494951
 GameObject:
   m_ObjectHideFlags: 0
