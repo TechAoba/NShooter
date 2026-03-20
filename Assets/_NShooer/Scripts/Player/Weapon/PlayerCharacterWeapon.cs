@@ -13,7 +13,7 @@ namespace NShooter
         [Header("Fire Config")]
 		[SerializeField] private float _fireRate = 0.1f;		// 射速
 		[SerializeField] private int _maxAmmo = 30;				// 弹夹容量
-		public float _reloadDuration = 2f;							// 换弹速度
+		public float _reloadDuration = 2f;						// 换弹速度
 		[SerializeField] private float _maxDistance = 100;		// 射程	
 		[SerializeField] private Transform _muzzlePoint;		// 枪口位置
 		[SerializeField] private LayerMask _hitLayerMask;		// 击中Layer
@@ -21,6 +21,7 @@ namespace NShooter
 
 		[Header("Server Data")]
 		[SerializeField] private float _lastShotTime;			// 上次射击时间（服务器维护）
+		[SerializeField] private float _shotTimeTolerance = 0.5f;// 射击间隔波动允许（服务器维护）
 
 		[Header("Sync Data")]
 		[SyncVar(hook = nameof(OnAmmoChanged))]
@@ -33,6 +34,9 @@ namespace NShooter
 		public Action<float> onReloadStarted;					// 通知开始换弹
 
 		private WaitForSeconds _cachedReloadWait;
+
+		public int MaxAmmo => _maxAmmo;
+		public int CurrentAmmoAmount => _currentAmmoAmount;
 
         public override void OnStartServer()
         {
@@ -79,6 +83,7 @@ namespace NShooter
 		private void CmdShooting()
 		{
 			if (!CanShoot()) return;
+			print("shot time: " + Time.time);
 			_lastShotTime = Time.time;
 			--_currentAmmoAmount;
 
@@ -145,14 +150,17 @@ namespace NShooter
 			_isReloading = false;
 		}
 
+		// 服务端判断是否可射击。“宽容验证”避免子弹射击失败
 		[Server]
 		private bool CanShoot()
 		{
 			// 正在填充弹药
 			if (_isReloading || _currentAmmoAmount <= 0) return false;
-			// 射击间隔
-			float currentTime = Time.time;
-			return (currentTime - _lastShotTime) >= _fireRate;
+
+			float timeSinceLast = Time.time - _lastShotTime;
+			if (timeSinceLast >= (_fireRate - _shotTimeTolerance))
+				return true;
+			return false;
 		}
 
 		// 所有客户端改变子弹数量

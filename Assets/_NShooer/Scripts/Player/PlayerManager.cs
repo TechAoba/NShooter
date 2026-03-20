@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Mirror;
+using Mirror.Examples.AssignAuthority;
 using UnityEngine;
+using System;
 
 namespace NShooter 
 {
@@ -36,5 +38,6 @@ namespace NShooter
 			_playerCharacters.Remove(conn.connectionId);
 			Debug.Log($"[PlayerManager] 玩家 {conn.connectionId} 已注销");
 		}
+
 	}
 }

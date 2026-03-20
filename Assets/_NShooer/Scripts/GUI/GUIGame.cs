@@ -9,12 +9,47 @@ namespace NShooter
 	public class GUIGame : MonoBehaviour
 	{
 		[SerializeField] private Button _buttonRespawn;
+		[SerializeField] private UIPlayerWeapon _uiPlayerWeapon;
+
+		private PlayerCharacterWeapon _weapon;
 
 		private void Start()
 		{
 			// 初始隐藏按钮
 			_buttonRespawn?.gameObject.SetActive(false);
 			_buttonRespawn?.onClick.AddListener(OnButtonRespawn);
+
+			LocalPlayerManager.Instance.OnCharacterSpawned += OnLocalPlayerCharacterSpawned;
+		}
+
+		private void OnLocalPlayerCharacterSpawned(PlayerCharacter playerCharacter)
+		{
+			if (playerCharacter.TryGetComponent(out PlayerCharacterWeapon weapon))
+			{
+				_weapon = weapon;
+				_weapon.onReloadStarted += OnReload;
+				_weapon.onAmmoChanged += OnAmmoChanged;
+				
+				_uiPlayerWeapon.SetMaxAmmo(_weapon.MaxAmmo);
+				_uiPlayerWeapon.SetCurrentAmmo(_weapon.CurrentAmmoAmount);
+			}
+		}
+
+		private void OnReload(float duration)
+		{
+			StartCoroutine(ChangeWeaponUI2Reload(duration));
+		}
+
+		IEnumerator ChangeWeaponUI2Reload(float duration)
+		{
+			_uiPlayerWeapon.SetIsReloding(true);
+			yield return new WaitForSeconds(duration);
+			_uiPlayerWeapon.SetIsReloding(false);
+		}
+
+		private void OnAmmoChanged(int oldAmmo, int newAmmo)
+		{
+			_uiPlayerWeapon.SetCurrentAmmo(_weapon.CurrentAmmoAmount);
 		}
 
 		// 当客户端成功连接服务器，显示重生按钮
