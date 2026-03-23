@@ -19,6 +19,8 @@ GameObject:
   - component: {fileID: 8868974464789103373}
   - component: {fileID: 771713669796290865}
   - component: {fileID: 4612830339329024027}
+  - component: {fileID: 4256260266600083515}
+  - component: {fileID: 1515905415178673148}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -222,6 +224,7 @@ MonoBehaviour:
   _weaponVisuals: {fileID: 771713669796290865}
   _fireRate: 0.1
   _maxAmmo: 30
+  _damage: 20
   _reloadDuration: 2
   _maxDistance: 100
   _muzzlePoint: {fileID: 5804387995846285004}
@@ -229,7 +232,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 192
   _lastShotTime: 0
-  _shotTimeTolerance: 0.2
+  _shotTimeTolerance: 0.02
 --- !u!114 &771713669796290865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,6 +270,47 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+--- !u!114 &4256260266600083515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1358876274445948432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d51624f5f6b66493cad4dfcab3f97d1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMethod: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _health: 100
+--- !u!114 &1515905415178673148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1358876274445948432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 606aaf07a58094b69acc98b68347d0d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMethod: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _health: {fileID: 4256260266600083515}
+  _vfxBloodPrefab: {fileID: 8798168951011265192, guid: 5b372333491324c5792019c3dc173d4e, type: 3}
+  _renderers:
+  - {fileID: 8991864638305478501}
+  - {fileID: 6935892823172590477}
+  _defaultMaterial: {fileID: 2100000, guid: 95ad1a694aa47b1409b8fdeb0faeb43d, type: 2}
+  _onHitMaterial: {fileID: 2100000, guid: 6fa8ef6d33a1f45bf8c56dbf5c23892c, type: 2}
+  _onHitMaterialDuration: 0.2
 --- !u!1 &3309028738408494951
 GameObject:
   m_ObjectHideFlags: 0
@@ -720,8 +764,18 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 3587277423669050949, guid: 4754efaa13741644aa1a61e4869e2c0d, type: 3}
   m_PrefabInstance: {fileID: 5875416347054287628}
   m_PrefabAsset: {fileID: 0}
+--- !u!137 &6935892823172590477 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3587277423673311361, guid: 4754efaa13741644aa1a61e4869e2c0d, type: 3}
+  m_PrefabInstance: {fileID: 5875416347054287628}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6935892823178033877 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3587277423659749849, guid: 4754efaa13741644aa1a61e4869e2c0d, type: 3}
+  m_PrefabInstance: {fileID: 5875416347054287628}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &8991864638305478501 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3260651445127056489, guid: 4754efaa13741644aa1a61e4869e2c0d, type: 3}
   m_PrefabInstance: {fileID: 5875416347054287628}
   m_PrefabAsset: {fileID: 0}

@@ -13,6 +13,7 @@ namespace NShooter
         [Header("Fire Config")]
 		[SerializeField] private float _fireRate = 0.1f;		// 射速
 		[SerializeField] private int _maxAmmo = 30;				// 弹夹容量
+		[SerializeField] private int _damage = 20;				// 武器伤害
 		public float _reloadDuration = 2f;						// 换弹速度
 		[SerializeField] private float _maxDistance = 100;		// 射程	
 		[SerializeField] private Transform _muzzlePoint;		// 枪口位置
@@ -21,7 +22,7 @@ namespace NShooter
 
 		[Header("Server Data")]
 		[SerializeField] private float _lastShotTime;			// 上次射击时间（服务器维护）
-		[SerializeField] private float _shotTimeTolerance = 0.5f;// 射击间隔波动允许（服务器维护）
+		[SerializeField] private float _shotTimeTolerance = 0.02f;// 射击间隔波动允许（服务器维护）
 
 		[Header("Sync Data")]
 		[SyncVar(hook = nameof(OnAmmoChanged))]
@@ -83,11 +84,16 @@ namespace NShooter
 		private void CmdShooting()
 		{
 			if (!CanShoot()) return;
-			print("shot time: " + Time.time);
+			// print("shot time: " + Time.time);
 			_lastShotTime = Time.time;
 			--_currentAmmoAmount;
 
-			BulletData bullet = calcBulletRayCast();
+			BulletData bullet = calcBulletRayCast(out bool isHit, out RaycastHit hit);
+
+			if (isHit && hit.collider.TryGetComponent(out PlayerCharacterHealth health))
+			{
+				health.ReduceHealth(_damage);
+			}
 
             onBulletFired?.Invoke(bullet);
 
@@ -103,14 +109,16 @@ namespace NShooter
         {
             if (!isLocalPlayer || _muzzlePoint == null) return;
 
-            var bullet = calcBulletRayCast();
+            BulletData bullet = calcBulletRayCast(out bool isHit, out RaycastHit hit);
 
             // 直接告诉 WeaponVisuals 播放（绕过网络）
             _weaponVisuals?.PlayLocalBullet(bullet); // 你需要加这个方法
         }
 
-        private BulletData calcBulletRayCast()
+        private BulletData calcBulletRayCast(out bool isHit, out RaycastHit hitInfo)
 		{
+			isHit = false;
+			hitInfo = default(RaycastHit);
             // 服务器执行射线检测
             Vector3 origin = _muzzlePoint.position;
             Vector3 direction = _muzzlePoint.forward.normalized;
@@ -121,6 +129,8 @@ namespace NShooter
                 out RaycastHit hit, _maxDistance, _hitLayerMask))
             {
                 actualDistance = hit.distance;
+				isHit = true;
+				hitInfo = hit;
                 print($"hit: {hit.collider.name}");
             }
 

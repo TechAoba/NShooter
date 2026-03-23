@@ -9,7 +9,7 @@ namespace NShooter
 	public class VFXBulletVisual : MonoBehaviour
 	{
 		[SerializeField] private GameObject _vfxBulletImpactPrefab;
-		[SerializeField] float _moveSpeed = 50f;
+		[SerializeField] float _moveSpeed = 100f;
 
 		public void FlyTo(Vector3 offset)
 		{
