@@ -9,6 +9,5 @@ namespace NShooter
 	public class PlayerCharacterVisual : NetworkBehaviour
 	{
 		public TMP_Text _textNametag;
-
     }
 }

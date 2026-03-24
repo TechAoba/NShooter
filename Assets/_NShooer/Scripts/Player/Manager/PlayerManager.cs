@@ -14,6 +14,9 @@ namespace NShooter
 		public bool TryGetPlayerCharacter(int id, out GameObject playerCharacter)
 			=> _playerCharacters.TryGetValue(id, out playerCharacter);
 
+		public event Action<PlayerCharacter> OnCharacterDespawned;
+		public event Action<PlayerCharacter> OnCharacterSpawned;
+
         public override void OnStartServer()
         {
 			if (Instance != null && Instance != this)
@@ -39,5 +42,9 @@ namespace NShooter
 			Debug.Log($"[PlayerManager] 玩家 {conn.connectionId} 已注销");
 		}
 
+		public void InvokeOnCharacterDespawned(PlayerCharacter playerCharacter)
+		{
+			OnCharacterDespawned?.Invoke(playerCharacter);
+		}
 	}
 }

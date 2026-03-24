@@ -10,13 +10,25 @@ namespace NShooter
 	{
 		[SerializeField] private Button _buttonRespawn;
 		[SerializeField] private UIPlayerWeapon _uiPlayerWeapon;
+		public static GUIGame Instance { get; private set; }
 
 		private PlayerCharacterWeapon _weapon;
+		private bool _addedToGame;
 
 		private void Start()
 		{
-			// 初始隐藏按钮
-			_buttonRespawn?.gameObject.SetActive(false);
+			// 初始化单例
+			if (Instance != null && Instance != this)
+			{
+				Destroy(gameObject);
+				return;
+			}
+			Instance = this;
+			DontDestroyOnLoad(gameObject);
+			// 初始隐藏GUIGame
+			gameObject.SetActive(false);
+			// 初始玩家不在房间中
+			_addedToGame = false;
 			_buttonRespawn?.onClick.AddListener(OnButtonRespawn);
 
 			LocalPlayerManager.Instance.OnCharacterSpawned += OnLocalPlayerCharacterSpawned;
@@ -29,7 +41,6 @@ namespace NShooter
 				_weapon = weapon;
 				_weapon.onReloadStarted += OnReload;
 				_weapon.onAmmoChanged += OnAmmoChanged;
-				
 				_uiPlayerWeapon.SetMaxAmmo(_weapon.MaxAmmo);
 				_uiPlayerWeapon.SetCurrentAmmo(_weapon.CurrentAmmoAmount);
 			}
@@ -52,29 +63,50 @@ namespace NShooter
 			_uiPlayerWeapon.SetCurrentAmmo(_weapon.CurrentAmmoAmount);
 		}
 
-		// 当客户端成功连接服务器，显示重生按钮
-		public void OnClientConnected()
+		// 玩家死亡，等待重生 => 仅显示重生按钮
+		public void OnWaitForRespawn()
 		{
 			_buttonRespawn?.gameObject.SetActive(true);
+			_uiPlayerWeapon?.gameObject.SetActive(false);
 		}
-		// 玩家被 销毁 时，显示重生按钮
-		public void OnClientDestroyed()
+		// 玩家退出房间 => 隐藏整个GUIGame
+		public void OnQuitGame()
 		{
+			gameObject.SetActive(false);
+		}
+		// 玩家进入房间 => 仅显示重生按钮
+		public void OnEnterGame()
+		{
+			gameObject.SetActive(true);
 			_buttonRespawn?.gameObject.SetActive(true);
+			_uiPlayerWeapon?.gameObject.SetActive(false);
 		}
 
+		// 点击重生按钮
 		private void OnButtonRespawn()
 		{
-			// 放置重复点击
+			// 重生按钮消失，武器面板开启
 			_buttonRespawn?.gameObject.SetActive(false);
+			_uiPlayerWeapon?.gameObject.SetActive(true);
 			
-			if (!NetworkClient.active)
+			// 玩家已经加入过游戏，仅重生
+			if (_addedToGame)
 			{
-				Debug.Log("Not connected to server");
+				LocalPlayerManager.Instance.PlayerCharacter.RequestRespawn();
+				if (_weapon != null) 
+					_weapon._currentAmmoAmount = _weapon.MaxAmmo;
 			}
+			else
+			{
+				_addedToGame = true;
+				if (!NetworkClient.active)
+				{
+					Debug.Log("Not connected to server");
+				}
 
-			// Mirror 创建玩家
-			NetworkClient.AddPlayer();
+				// Mirror 创建玩家
+				NetworkClient.AddPlayer();
+			}
 		}
 	}
 }

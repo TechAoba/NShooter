@@ -18,11 +18,11 @@ namespace NShooter
 
         public override void OnStartClient()
         {
-            _health.OnHealthChangedAction += OnHealthChanged;
+            _health.OnHealthDecrease += OnHealthChanged;
         }
         public override void OnStopClient()
         {
-            _health.OnHealthChangedAction -= OnHealthChanged;
+            _health.OnHealthDecrease -= OnHealthChanged;
         }
 
 		private void ApplyMaterial(Material material)

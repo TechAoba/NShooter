@@ -14,7 +14,7 @@ namespace NShooter
 		private bool _isDead = false;
 		public bool IsDead => _isDead;
 
-		public event Action OnHealthChangedAction;
+		public event Action OnHealthDecrease;
 
 		[Server]
 		public void ReduceHealth(int amount)
@@ -24,19 +24,29 @@ namespace NShooter
 			if (_health <= 0)
 			{
 				_isDead = true;
-				RpcOnDeath();
+
+				// 执行回调
+				PlayerCharacter pc = gameObject.GetComponent<PlayerCharacter>();
+				PlayerManager.Instance?.InvokeOnCharacterDespawned(pc);
+
+				pc.RpcOnDespawn();
 			}
 		}
 
-		[ClientRpc]
-		private void RpcOnDeath()
+		[Server]
+		public void ServerRespawn()
 		{
-			print("current health: " + _health);
+			_health = 100;
+			_isDead = false;
 		}
 
 		private void OnHealthChanged(int oldHealth, int newHealth)
 		{
-			OnHealthChangedAction?.Invoke();
+			// 玩家收到攻击并且血量大于0（存活状态）
+			if (newHealth < oldHealth && newHealth > 0)
+			{
+				OnHealthDecrease?.Invoke();
+			}
 		}
 	}
 }

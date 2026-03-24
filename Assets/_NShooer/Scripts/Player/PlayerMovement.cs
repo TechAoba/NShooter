@@ -18,11 +18,19 @@ namespace NShooter
         private float _syncedSpeed;
         private float _lastSentSpeed;
         private Vector3 _lastVelocity;
+        private Vector2 _moveInput;
+        private Vector2 _mousePos;
 
         Camera camera;
         private void Start()
         {
             camera = Camera.main;
+        }
+
+        public void SetInput(Vector2 moveInput, Vector2 mousePos)
+        {
+            _moveInput = moveInput;
+            _mousePos = mousePos;
         }
 
         private void FixedUpdate()
@@ -35,8 +43,8 @@ namespace NShooter
             RotatePlayer(raycastPosition);
 
             // Move Player
-            float horizontal = Input.GetAxis("Horizontal");
-            float vertical = Input.GetAxis("Vertical");
+            float horizontal = _moveInput.x;
+            float vertical = _moveInput.y;
             Vector3 inputDirection = (new Vector3(horizontal, 0, vertical)).normalized;
             Vector3 direction = GetMoveDirection(horizontal, vertical);
             transform.position += direction * Time.deltaTime * _speed;
@@ -74,7 +82,7 @@ namespace NShooter
 
         private Vector3 GetRaycastPosition()
         {
-            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = camera.ScreenPointToRay(_mousePos);
             Plane plane = new(Vector3.up, new Vector3(0, 1, 0));
             if (plane.Raycast(ray, out float distance))
             {

@@ -26,7 +26,7 @@ namespace NShooter
 
 		[Header("Sync Data")]
 		[SyncVar(hook = nameof(OnAmmoChanged))]
-		private int _currentAmmoAmount;							// 当前子弹数
+		public int _currentAmmoAmount;							// 当前子弹数
 		[SyncVar]
 		private bool _isReloading = false;						// 当前是否在装弹
 
@@ -46,20 +46,23 @@ namespace NShooter
 			_cachedReloadWait = new WaitForSeconds(_reloadDuration);
         }
 
-        private void Update()
-        {
+		public void TryShoot()
+		{
 			if (!isLocalPlayer) return;
-			if (Input.GetMouseButton(0) && CanShotLocally())
+			if (CanShotLocally())
 			{
                 PredictedFire(); // 本地立即播放
 				CmdShooting();	 // 鼠标左键 射击（向服务器发送射击命令）
                 _lastShotTimeLocal = Time.time; // 更新本地时间
 			}
-			if (Input.GetKeyDown(KeyCode.R))
-			{
-				CmdReload();
-			}
-        }
+		}
+
+		public void TryReload()
+		{
+			if (!isLocalPlayer) return;
+			CmdReload();
+		}
+
 		private bool CanShotLocally()
 		{
 			if (_isReloading || _currentAmmoAmount <= 0) 
@@ -131,7 +134,7 @@ namespace NShooter
                 actualDistance = hit.distance;
 				isHit = true;
 				hitInfo = hit;
-                print($"hit: {hit.collider.name}");
+                // print($"hit: {hit.collider.name}");
             }
 
             // 构造子弹数据

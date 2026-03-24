@@ -9,7 +9,7 @@ namespace NShooter
 {
 	public class PlayerSession : NetworkBehaviour
 	{
-		public PlayerCharacterVisual playerCharacterVisual;
+		public PlayerCharacterVisual _playerCharacterVisual;
 		[SyncVar(hook = nameof(OnNicknameChanged))]
 		public string nickname;
 
@@ -64,7 +64,7 @@ namespace NShooter
         // ----------------------------
         private void OnNicknameChanged(string oldName, string newName)
         {
-			playerCharacterVisual._textNametag.SetText(newName);
+			_playerCharacterVisual._textNametag.SetText(newName);
         }
 	}
 }

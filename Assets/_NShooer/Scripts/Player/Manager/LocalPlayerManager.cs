@@ -30,5 +30,6 @@ namespace NShooter
 			_playerCharacter = playerCharacter;
 			OnCharacterSpawned?.Invoke(playerCharacter);
 		}
+
 	}
 }

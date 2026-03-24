@@ -18,14 +18,14 @@ namespace NShooter
         public override void OnClientConnect()
         {
             base.OnClientConnect();
-            guiGame.OnClientConnected();
+            guiGame.OnEnterGame();
         }
 
         // 在客户端执行：当有玩家断开连接（清理本地状态、返回主菜单、实现断开连接等）
         public override void OnClientDisconnect()
         {
             base.OnClientDisconnect();
-            guiGame.OnClientDestroyed();
+            guiGame.OnQuitGame();
         }
 
         // 在服务端执行：当有新玩家连接并请求生成玩家时调用
