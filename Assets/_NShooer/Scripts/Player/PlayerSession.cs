@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
+using System;
 
 namespace NShooter 
 {
@@ -13,10 +14,13 @@ namespace NShooter
 
 		[SyncVar(hook = nameof(OnNicknameChanged))]
 		public string _nickname;
-        [SyncVar]
+        [SyncVar(hook = nameof(OnKillChanged))]
         public int _kill;
-        [SyncVar]
+        [SyncVar(hook = nameof(OnDeathChanged))]
         public int _death;
+
+        public static event Action OnKillChangedEvent;
+        public static event Action OnDeathChangedEvent;
 
         [Server]
         public void AddKill() => ++_kill;
@@ -77,6 +81,14 @@ namespace NShooter
 			_playerCharacterVisual._textNametag.SetText(newName);
         }
 
+        private void OnKillChanged(int oldKill, int newKill)
+        {
+            OnKillChangedEvent?.Invoke();
+        }
+        private void OnDeathChanged(int oldDeath, int newDeath)
+        {
+            OnDeathChangedEvent?.Invoke();
+        }
 
 	}
 }

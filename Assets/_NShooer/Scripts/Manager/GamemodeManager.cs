@@ -36,7 +36,6 @@ namespace NShooter
 			
 			_currentState = GameState.Playing;
 			_secondsRemaining = Mathf.CeilToInt(_gameDuration);
-			print("start gamemode");
 			StartCoroutine(GameTimerCoroutine());
         }
 
@@ -87,12 +86,33 @@ namespace NShooter
 		[ClientRpc]
 		private void RpcOnEnterEndGame()
 		{
-			PlayerCharacter pc = LocalPlayerManager.Instance.PlayerCharacter;
-			pc.GetComponent<PlayerInputHandler>().enabled = false;
-			
+			// 遍历场景中所有 PlayerCharacter（包括自己和其他人）
+			var allPlayers = FindObjectsOfType<PlayerCharacter>();
+			foreach (var player in allPlayers)
+			{
+				// 1. 禁用输入（仅本地玩家需要，但统一处理也无妨）
+				if (player.TryGetComponent(out PlayerInputHandler input))
+				{
+					input.enabled = false;
+				}
+				// 2. 禁用移动 & 动画
+				if (player.TryGetComponent(out PlayerMovement move))
+				{
+					move.enabled = false;
+					move._animator.speed = 0;
+				}
 
-			// 隐藏GUIGame
-			GUIGame.Instance.OnQuitGame();
+				// 3. 获取刚体并清空速度 + 设为 Kinematic
+				if (player.TryGetComponent(out Rigidbody rb))
+				{
+					rb.velocity = Vector3.zero;      // 清空线速度
+					rb.angularVelocity = Vector3.zero; // 清空角速度
+					rb.isKinematic = true;           // 不再受物理力影响
+				}
+			}
+
+			// 隐藏游戏 UI
+			GUIGame.Instance?.OnQuitGame();
 		}
 
 		[ClientRpc]

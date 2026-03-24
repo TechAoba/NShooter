@@ -14,8 +14,8 @@ namespace NShooter
 		public bool TryGetPlayerCharacter(int id, out GameObject playerCharacter)
 			=> _playerCharacters.TryGetValue(id, out playerCharacter);
 
-		public event Action<PlayerCharacter> OnCharacterDespawned;
-		public event Action<PlayerCharacter> OnCharacterSpawned;
+		public static event Action OnCharacterQuitEvent;
+		public static event Action OnCharacterEnterEvent;
 
         public override void OnStartServer()
         {
@@ -27,24 +27,38 @@ namespace NShooter
 			Instance = this;
 			DontDestroyOnLoad(gameObject);
         }
+		// ========================
+        // 服务器 API（仅服务器调用）
+        // ========================
 		
-		// 注册玩家（服务器调用）
+		[Server]
 		public void RegisterPlayerCharacter(NetworkConnectionToClient conn, GameObject player)
 		{
 			_playerCharacters.Add(conn.connectionId, player);
 			Debug.Log($"[PlayerManager] 玩家 {conn.connectionId} 已注册");
+			InvokeOnCharacterEnter();
 		}
 
-		// 注销玩家（服务器调用）
+		[Server]
 		public void RemovePlayerCharacter(NetworkConnectionToClient conn)
 		{
 			_playerCharacters.Remove(conn.connectionId);
 			Debug.Log($"[PlayerManager] 玩家 {conn.connectionId} 已注销");
+			InvokeOnCharacterQuit();
 		}
 
-		public void InvokeOnCharacterDespawned(PlayerCharacter playerCharacter)
+        // ========================
+        // ClientRpc：广播给所有客户端
+        // ========================
+		[ClientRpc]
+		public void InvokeOnCharacterQuit()
 		{
-			OnCharacterDespawned?.Invoke(playerCharacter);
+			OnCharacterQuitEvent?.Invoke();
+		}
+		[ClientRpc]
+		public void InvokeOnCharacterEnter()
+		{
+			OnCharacterEnterEvent?.Invoke();
 		}
 	}
 }

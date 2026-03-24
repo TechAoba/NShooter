@@ -10,7 +10,7 @@ namespace NShooter
 		[SerializeField] private Rigidbody _rb;
         [SerializeField] private float _speed = 6f;
         [SerializeField] private float _rotateSpeed = 10f;
-        [SerializeField] private Animator _animator;
+        public Animator _animator;
         [SerializeField] private float _maxLastVelocityInterpolationSpeed = 3f;
 
         // sync move speed

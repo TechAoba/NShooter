@@ -57,11 +57,11 @@ namespace NShooter
         // 在服务端执行：当有玩家断开连接（清理玩家数据、通知其他玩家、保存进度等）
         public override void OnServerDisconnect(NetworkConnectionToClient conn)
         {
+            base.OnServerDisconnect(conn);
             if (PlayerManager.Instance != null)
             {
                 PlayerManager.Instance.RemovePlayerCharacter(conn);
             }
-            base.OnServerDisconnect(conn);
         }
 	}
 }

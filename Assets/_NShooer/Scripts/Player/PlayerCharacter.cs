@@ -1,5 +1,6 @@
 using Mirror;
 using Mirror.Examples.BilliardsPredicted;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -18,6 +19,8 @@ namespace NShooter
 
 		private PlayerCharacterHealth _health;
 		private PlayerInputHandler _input;
+
+		public static event Action OnPlayerDespawnEvent;
 
         public override void OnStartClient()
         {
@@ -100,6 +103,12 @@ namespace NShooter
 			// 玩家昵称
 			if (_nickNameCanvas != null) 
 				_nickNameCanvas.enabled = visible;
+		}
+
+		[ClientRpc]
+		public void InvorkPlayerDespawn()
+		{
+			OnPlayerDespawnEvent?.Invoke();
 		}
 	}
 }

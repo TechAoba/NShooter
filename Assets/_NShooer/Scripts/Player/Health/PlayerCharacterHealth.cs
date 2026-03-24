@@ -14,12 +14,14 @@ namespace NShooter
 		private bool _isDead = false;
 		public bool IsDead => _isDead;
 		private PlayerSession _session;
+		private PlayerCharacter _playerCharacter;
 
 		public event Action OnHealthDecrease;
 
 		public override void OnStartClient()
 		{
 			_session = GetComponent<PlayerSession>();
+			_playerCharacter = GetComponent<PlayerCharacter>();
 		}
 
 		[Server]
@@ -35,7 +37,7 @@ namespace NShooter
 
 				// 执行回调
 				PlayerCharacter pc = gameObject.GetComponent<PlayerCharacter>();
-				PlayerManager.Instance?.InvokeOnCharacterDespawned(pc);
+				_playerCharacter.InvorkPlayerDespawn();
 
 				pc.RpcOnDespawn();
 			}
