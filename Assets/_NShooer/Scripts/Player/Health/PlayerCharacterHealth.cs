@@ -13,8 +13,14 @@ namespace NShooter
 		[SyncVar]
 		private bool _isDead = false;
 		public bool IsDead => _isDead;
+		private PlayerSession _session;
 
 		public event Action OnHealthDecrease;
+
+		public override void OnStartClient()
+		{
+			_session = GetComponent<PlayerSession>();
+		}
 
 		[Server]
 		public void ReduceHealth(int amount)
@@ -24,6 +30,8 @@ namespace NShooter
 			if (_health <= 0)
 			{
 				_isDead = true;
+				// 死亡次数加1
+				AddDeath();
 
 				// 执行回调
 				PlayerCharacter pc = gameObject.GetComponent<PlayerCharacter>();
@@ -31,6 +39,12 @@ namespace NShooter
 
 				pc.RpcOnDespawn();
 			}
+		}
+
+		[Server]
+		private void AddDeath()
+		{
+			_session.AddDeath();
 		}
 
 		[Server]

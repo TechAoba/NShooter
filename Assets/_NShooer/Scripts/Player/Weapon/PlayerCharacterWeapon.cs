@@ -9,6 +9,7 @@ namespace NShooter
 	public class PlayerCharacterWeapon : NetworkBehaviour
 	{
 		public WeaponVisuals _weaponVisuals;
+		private PlayerSession _session;
 
         [Header("Fire Config")]
 		[SerializeField] private float _fireRate = 0.1f;		// 射速
@@ -42,6 +43,9 @@ namespace NShooter
         public override void OnStartServer()
         {
             base.OnStartServer();
+
+			_session = GetComponent<PlayerSession>();
+
 			_currentAmmoAmount = _maxAmmo;
 			_cachedReloadWait = new WaitForSeconds(_reloadDuration);
         }
@@ -96,6 +100,11 @@ namespace NShooter
 			if (isHit && hit.collider.TryGetComponent(out PlayerCharacterHealth health))
 			{
 				health.ReduceHealth(_damage);
+				// 击杀玩家
+				if (health._health <= 0)
+				{
+					_session.AddKill();
+				}
 			}
 
             onBulletFired?.Invoke(bullet);
