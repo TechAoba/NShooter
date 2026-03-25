@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,14 +10,16 @@ namespace NShooter
 {
 	public class GUIGame : MonoBehaviour
 	{
-		[SerializeField] private Button _buttonRespawn;
-		[SerializeField] private UIPlayerWeapon _uiPlayerWeapon;
+		[SerializeField] Button _buttonRespawn;
+		[SerializeField] UIPlayerWeapon _uiPlayerWeapon;
+		[SerializeField] TMP_Text _textMatchTime;
 		public static GUIGame Instance { get; private set; }
 
-		private PlayerCharacterWeapon _weapon;
-		private bool _addedToGame;
+		PlayerCharacterWeapon _weapon;
+		GamemodeManager _gamemodeManager;
+		bool _addedToGame;
 
-		private void Start()
+		void Start()
 		{
 			// 初始化单例
 			if (Instance != null && Instance != this)
@@ -34,7 +38,19 @@ namespace NShooter
 			LocalPlayerManager.Instance.OnCharacterSpawned += OnLocalPlayerCharacterSpawned;
 		}
 
-		private void OnLocalPlayerCharacterSpawned(PlayerCharacter playerCharacter)
+        void LateUpdate()
+        {
+            if (_gamemodeManager == null)
+			{
+				_gamemodeManager = FindObjectOfType<GamemodeManager>();
+				return;
+			}
+			int remainingSeconds = _gamemodeManager._secondsRemaining;
+			string time = TimeSpan.FromSeconds(remainingSeconds).ToString(@"mm\:ss");
+			_textMatchTime.SetText(time);
+        }
+
+        private void OnLocalPlayerCharacterSpawned(PlayerCharacter playerCharacter)
 		{
 			if (playerCharacter.TryGetComponent(out PlayerCharacterWeapon weapon))
 			{

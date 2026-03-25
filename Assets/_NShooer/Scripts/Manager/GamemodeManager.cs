@@ -22,7 +22,7 @@ namespace NShooter
 		private GameState _currentState = GameState.Playing;
 
 		[SyncVar]
-		private int _secondsRemaining;
+		public int _secondsRemaining;
 
 		public bool IsPlaying => _currentState == GameState.Playing;
 		public bool IsEndGame => _currentState == GameState.EndGame;
