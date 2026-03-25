@@ -24,7 +24,6 @@ namespace NShooter
 			PlayerManager.OnCharacterEnterEvent += UpdateScoreboard;
 			PlayerManager.OnCharacterQuitEvent += UpdateScoreboard;
 			PlayerSession.OnKillChangedEvent += UpdateScoreboard;
-			PlayerSession.OnDeathChangedEvent += UpdateScoreboard;
 		}
 
         void OnDestroy()
@@ -32,12 +31,10 @@ namespace NShooter
             PlayerManager.OnCharacterEnterEvent -= UpdateScoreboard;
 			PlayerManager.OnCharacterQuitEvent -= UpdateScoreboard;
 			PlayerSession.OnKillChangedEvent -= UpdateScoreboard;
-			PlayerSession.OnDeathChangedEvent -= UpdateScoreboard;
         }
 
         public void UpdateScoreboard()
 		{
-			print("update score");
 			_orderedPlayerSessions.Clear();
 			var sessions = FindObjectsOfType<PlayerSession>()
 				.OrderByDescending(s => s._kill).ToArray();

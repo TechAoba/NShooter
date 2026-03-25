@@ -6,8 +6,8 @@ using UnityEngine;
 
 namespace NShooter 
 {
-	public class PlayerCharacterVisual : NetworkBehaviour
+	public class PlayerCharacterVisual : MonoBehaviour
 	{
-		public TMP_Text _textNametag;
+		public Transform _visualTransform;
     }
 }

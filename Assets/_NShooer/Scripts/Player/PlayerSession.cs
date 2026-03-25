@@ -78,7 +78,7 @@ namespace NShooter
         // ----------------------------
         private void OnNicknameChanged(string oldName, string newName)
         {
-			_playerCharacterVisual._textNametag.SetText(newName);
+			// _playerCharacterVisual._textNametag.SetText(newName);
         }
 
         private void OnKillChanged(int oldKill, int newKill)
