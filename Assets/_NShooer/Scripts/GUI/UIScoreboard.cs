@@ -27,6 +27,14 @@ namespace NShooter
 			PlayerSession.OnDeathChangedEvent += UpdateScoreboard;
 		}
 
+        void OnDestroy()
+        {
+            PlayerManager.OnCharacterEnterEvent -= UpdateScoreboard;
+			PlayerManager.OnCharacterQuitEvent -= UpdateScoreboard;
+			PlayerSession.OnKillChangedEvent -= UpdateScoreboard;
+			PlayerSession.OnDeathChangedEvent -= UpdateScoreboard;
+        }
+
         public void UpdateScoreboard()
 		{
 			print("update score");

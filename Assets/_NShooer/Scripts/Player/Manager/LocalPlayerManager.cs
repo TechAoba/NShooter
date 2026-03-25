@@ -14,15 +14,15 @@ namespace NShooter
 		private PlayerCharacter _playerCharacter;
 		public PlayerCharacter PlayerCharacter => _playerCharacter;
 
-		private void Start()
+		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+		private static void Init()
         {
-			if (Instance != null && Instance != this)
+			if (Instance == null)
 			{
-				Destroy(gameObject);
-				return;
+				GameObject obj = new GameObject("LocalPlayerManager");
+				Instance = obj.AddComponent<LocalPlayerManager>();
+				DontDestroyOnLoad(obj);
 			}
-			Instance = this;
-			DontDestroyOnLoad(gameObject);
         }
 		
 		public void InvokeOnCharacterSpawned(PlayerCharacter playerCharacter)
