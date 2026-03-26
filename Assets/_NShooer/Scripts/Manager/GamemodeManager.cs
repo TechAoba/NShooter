@@ -2,6 +2,7 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace NShooter 
 {
@@ -18,7 +19,7 @@ namespace NShooter
 			Finished,	// 游戏完全结束
 		}
 
-		[SyncVar(hook = nameof(OnGameStateChanged))]
+		[SyncVar]
 		private GameState _currentState = GameState.Playing;
 
 		[SyncVar]
@@ -28,7 +29,7 @@ namespace NShooter
 		public bool IsEndGame => _currentState == GameState.EndGame;
 
         // 事件：供 UI 或其他系统监听
-        public static System.Action<GameState, float> OnGameStateChangedEvent;
+        public static Action OnGameEndEvent;
 
         public override void OnStartServer()
         {
@@ -113,6 +114,8 @@ namespace NShooter
 
 			// 隐藏游戏 UI
 			GUIGame.Instance?.OnQuitGame();
+
+			OnGameEndEvent?.Invoke();
 		}
 
 		[ClientRpc]
@@ -121,11 +124,5 @@ namespace NShooter
 			Debug.Log("[Client] 游戏结束！");
 		}
 
-		// SyncVar Hook：客户端收到状态变更时触发
-        private void OnGameStateChanged(GameState oldState, GameState newState)
-        {
-            OnGameStateChangedEvent?.Invoke(newState, _secondsRemaining);
-            // UI 可监听此事件更新显示
-        }
 	}
 }
