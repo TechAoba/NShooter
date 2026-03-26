@@ -7,22 +7,22 @@ namespace NShooter
 {
 	public class PlayerMovement : NetworkBehaviour
 	{
-		[SerializeField] private Rigidbody _rb;
-        [SerializeField] private float _speed = 6f;
-        [SerializeField] private float _rotateSpeed = 10f;
+		[SerializeField] Rigidbody _rb;
+        [SerializeField] float _speed = 6f;
+        [SerializeField] float _rotateSpeed = 10f;
         public Animator _animator;
-        [SerializeField] private float _maxLastVelocityInterpolationSpeed = 3f;
+        [SerializeField] float _maxLastVelocityInterpolationSpeed = 3f;
 
         // sync move speed
         [SyncVar(hook = nameof(OnSpeedChanged))]
-        private float _syncedSpeed;
-        private float _lastSentSpeed;
-        private Vector3 _lastVelocity;
-        private Vector2 _moveInput;
-        private Vector2 _mousePos;
+        float _syncedSpeed;
+        float _lastSentSpeed;
+        Vector3 _lastVelocity;
+        Vector2 _moveInput;
+        Vector2 _mousePos;
 
-        Camera camera;
-        private void Start()
+        new Camera camera;
+        void Start()
         {
             camera = Camera.main;
         }
@@ -35,6 +35,7 @@ namespace NShooter
 
         private void FixedUpdate()
         {
+            _rb.velocity = Vector2.zero;
             if (!isLocalPlayer) return;
 
             // Get Raycast Position On Plane
