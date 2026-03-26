@@ -227,8 +227,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e06978ef7074bef87b4be20c37787c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _textNametag: {fileID: 0}
+  syncMethod: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _visualTransform: {fileID: 5319850766613231605}
+  _renderers:
+  - {fileID: 8991864638305478501}
+  - {fileID: 6935892823172590477}
+  _materialAlly: {fileID: 2100000, guid: 73af2a889181f4fa4b580ce83809206c, type: 2}
+  _materialEnemy: {fileID: 2100000, guid: 34ba67bfccd4445a1a07264f624352c7, type: 2}
 --- !u!114 &8868974464789103373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -317,7 +325,6 @@ MonoBehaviour:
   _renderers:
   - {fileID: 8991864638305478501}
   - {fileID: 6935892823172590477}
-  _defaultMaterial: {fileID: 2100000, guid: 95ad1a694aa47b1409b8fdeb0faeb43d, type: 2}
   _onHitMaterial: {fileID: 2100000, guid: 6fa8ef6d33a1f45bf8c56dbf5c23892c, type: 2}
   _onHitMaterialDuration: 0.2
 --- !u!114 &3060572321677178862

@@ -23,7 +23,6 @@ namespace NShooter
 
         void ReUpdateAllListings()
 		{
-			print("ReUpdate");
 			DisableAllListings();
 
 			var players = FindObjectsOfType<PlayerCharacter>();

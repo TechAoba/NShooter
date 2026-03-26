@@ -37,7 +37,6 @@ namespace NShooter
 
         public void UpdateScoreboard()
 		{
-			print("Update score");
 			_orderedPlayerSessions.Clear();
 			var sessions = FindObjectsOfType<PlayerSession>()
 				.OrderByDescending(s => s._kill).ToArray();

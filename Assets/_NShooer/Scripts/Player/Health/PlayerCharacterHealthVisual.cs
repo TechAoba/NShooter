@@ -7,17 +7,20 @@ namespace NShooter
 {
 	public class PlayerCharacterHealthVisual : NetworkBehaviour
 	{
-		[SerializeField] private PlayerCharacterHealth _health;
-		[SerializeField] private GameObject _vfxBloodPrefab;
+		[SerializeField] PlayerCharacterHealth _health;
+		[SerializeField] GameObject _vfxBloodPrefab;
 
-		[SerializeField] private SkinnedMeshRenderer[] _renderers;
-		[SerializeField] private Material _defaultMaterial;
-		[SerializeField] private Material _onHitMaterial;
+		[SerializeField] SkinnedMeshRenderer[] _renderers;
+		Material _defaultMaterial;
+		[SerializeField] Material _onHitMaterial;
 
 		[SerializeField] private float _onHitMaterialDuration = 0.2f;
 
         public override void OnStartClient()
         {
+			IPlayerCharacterDefaultMaterialProvider materialProvider = GetComponent<IPlayerCharacterDefaultMaterialProvider>();
+			_defaultMaterial = materialProvider.GetDefaultMaterial();
+			
             _health.OnHealthDecrease += OnHealthChanged;
         }
         public override void OnStopClient()
@@ -46,5 +49,6 @@ namespace NShooter
 			yield return new WaitForSeconds(_onHitMaterialDuration);
 			ApplyMaterial(_defaultMaterial);
 		}
-	}
+
+    }
 }
