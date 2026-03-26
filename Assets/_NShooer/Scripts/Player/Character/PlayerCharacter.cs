@@ -110,5 +110,10 @@ namespace NShooter
 		{
 			OnPlayerDespawnEvent?.Invoke();
 		}
+
+		public bool isLocal()
+		{
+			return isLocalPlayer;
+		}
 	}
 }

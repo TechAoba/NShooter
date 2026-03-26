@@ -14,6 +14,10 @@ namespace NShooter
 		[SerializeField] UIListingPlayerInfo[] _listings;
 		[SerializeField] Vector3 _listingOffset;
 
+		[Space]
+		[SerializeField] Color _colorAlly;
+		[SerializeField] Color _colorEnemy;
+
         void Start()
         {
 			PlayerManager.OnCharacterEnterEvent += ReUpdateAllListings;
@@ -33,6 +37,9 @@ namespace NShooter
 
 				pc.TryGetComponent(out PlayerCharacterVisual pcv);
 
+				Color color = pc.isLocal() ? _colorAlly : _colorEnemy;
+				// Color color = _colorAlly;
+				listing.SetColor(color);
 				listing.SetNametag(GetPlayerNickName(pc));
 				listing.SetTarget(pcv._visualTransform);
 				listing.gameObject.SetActive(true);
