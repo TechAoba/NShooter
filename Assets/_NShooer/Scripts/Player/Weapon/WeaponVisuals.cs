@@ -2,12 +2,14 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CameraShake;
 
 namespace NShooter 
 {	
 	// 武器效果（射出子弹、火花特效、换弹动作），纯客户端效果
 	public class WeaponVisuals : NetworkBehaviour
 	{
+		CameraShaker _cameraShaker;
 		[SerializeField] private PlayerCharacterWeapon _weapon;
 		[SerializeField] private Animator _anim;
 		[Header("Fire Data")]
@@ -16,6 +18,14 @@ namespace NShooter
 		[SerializeField] private float _muzzleFlashDuration = 0.05f;// 火花持续时间
 
 		private const int LAYER_WEIGHT_UPPERBODY = 1;
+
+        public override void OnStartClient()
+        {
+			if (isLocalPlayer)
+			{
+				_cameraShaker = FindObjectOfType<CameraShaker>();
+			}
+        }
 
         void Awake()
         {
@@ -38,6 +48,8 @@ namespace NShooter
             if (!isLocalPlayer) return; // 只给自己看
             SpawnBulletEffect(bullet);
             StartCoroutine(SpawnFireFlash());
+			
+			_cameraShaker.ShakePresets.ShortShake3D();
         }
 
         // 服务器 → 所有客户端：播放子弹
